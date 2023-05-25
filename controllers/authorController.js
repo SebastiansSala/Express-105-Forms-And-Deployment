@@ -1,3 +1,5 @@
+const Author = require("../models/author.model");
+
 exports.author_list = async (req, res, next) => {
   try {
     res.send("NOT IMPLEMENTED: Author list");
@@ -31,6 +33,14 @@ exports.author_create_post = async (req, res, next) => {
 };
 
 exports.author_delete_get = async (req, res, next) => {
+  try {
+    res.send("NOT IMPLEMENTED: Author delete POST");
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.author_delete_post = async (req, res, next) => {
   try {
     res.send("NOT IMPLEMENTED: Author delete POST");
   } catch (e) {

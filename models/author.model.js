@@ -2,15 +2,23 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const AuthorSchema = new Schema({
-  first_name: String,
-  family_name: String,
-  date_of_birth: { type: Date, default: Date.now },
-  date_of_death: { type: Date || Boolean, default: false },
-  name: String,
-  lifespan: String,
-  url: String,
+  first_name: { type: String, required: true, maxLength: 100 },
+  family_name: { type: String, required: true, maxLength: 100 },
+  date_of_birth: { type: Date },
+  date_of_death: { type: Date },
 });
 
-const AuthorModel = moongose.model("Author", AuthorSchema);
+AuthorSchema.virtual("name").get(function () {
+  let fullname = "";
+  if (this.first_name && this.family_name) {
+    fullname = `${this.family_name}, ${this.first_name}`;
+  }
 
-module.exports = AuthorModel;
+  return fullname;
+});
+
+AuthorSchema.virtual("url").get(function () {
+  return `/catalog/author/${this._id}`;
+});
+
+module.exports = mongoose.model("Author", AuthorSchema);

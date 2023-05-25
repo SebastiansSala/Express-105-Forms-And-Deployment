@@ -1,18 +1,20 @@
 const mongoose = require("mongoose");
+
 const Schema = mongoose.Schema;
 
-const GenreModel = require("./genre.model");
-const AuthorModel = require("./author.model");
-
 const BookSchema = new Schema({
-    title: String,
-    author: AuthorModel,
-    summary: String,
-    ISBN: String,
-    genre: GenreModel,
-    url: String
-})
+  title: { type: String, required: true },
+  author: { type: Schema.Types.ObjectId, ref: "Author", required: true },
+  summary: { type: String, required: true },
+  isbn: { type: String, required: true },
+  genre: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
+});
 
-const BookModel = moongose.model("Book", BookSchema);
+// Virtual for book's URL
+BookSchema.virtual("url").get(function () {
+  // We don't use an arrow function as we'll need the this object
+  return `/catalog/book/${this._id}`;
+});
 
-module.exports = authorSchema
+// Export model
+module.exports = mongoose.model("Book", BookSchema);

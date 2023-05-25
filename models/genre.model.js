@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const genreSchema = new Schema({
-  name: String,
-  url: String
+const GenreSchema = new Schema({
+  name: { type: String, minLength: 3, maxLength: 100 },
 });
 
-const GenreModel = moongose.model("Genre", genreSchema);
+GenreSchema.virtual("url").get(function () {
+  return `/catalog/genre/${this._id}`;
+});
 
-module.exports = GenreModel;
+module.exports = mongoose.model("Genre", GenreSchema);
