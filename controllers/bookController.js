@@ -2,6 +2,7 @@ const Book = require("../models/book.model");
 const Author = require("../models/author.model");
 const Genre = require("../models/genre.model");
 const BookInstance = require("../models/bookInstance.model");
+const mongoose = require("mongoose");
 
 const asyncHandler = require("express-async-handler");
 
@@ -25,27 +26,38 @@ exports.index = asyncHandler(async (req, res, next) => {
 });
 
 exports.book_list = asyncHandler(async (req, res, next) => {
-  const allBooks = await Book.find({}, "title author")
+  const allBooks = await Book.find()
     .sort({ title: 1 })
     .populate("author")
     .exec();
 
-  res.render("book_list", { title: "Book List", book_list: allBooks });
+    console.log(allBooks);
+
+  res.render("book_list"),
+    {
+      title: "Book list",
+      book_list: allBooks,
+    };
 });
 
 exports.book_detail = asyncHandler(async (req, res, next) => {
-  try {
-    const [book_details, book_genre] = await Promise.all([
-      Book.findById(req.params.id).exec(),
-      Genre.find(req.params.id).exec(),
-    ]);
-    res.router('book_detail', {
-      book_details: book_details,
-      book_genre: book_genre,
-    });
-  } catch (e) {
-    next(e);
+  const id = mongoose.Types.ObjectId(req.params.id);
+  const [book, bookInstances] = await Promise.all([
+    Book.findById(req.params.id).populate("author").populate("genre").exec(),
+    BookInstance.find({ book: req.params.id }).exec(),
+  ]);
+
+  if (book === null) {
+    const err = new Error("Book not found");
+    err.status = 404;
+    return next(err);
   }
+
+  res.render("book_detail", {
+    title: book.title,
+    book: book,
+    book_instances: bookInstances,
+  });
 });
 
 exports.book_create_get = asyncHandler(async (req, res, next) => {

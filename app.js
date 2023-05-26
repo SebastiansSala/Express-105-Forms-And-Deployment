@@ -35,7 +35,6 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
   res.status(err.status || 500);
   res.render("error");
 });
@@ -56,11 +55,10 @@ const connectDB = async () => {
     console.log("Conexión exitosa a la base de datos");
   } catch (error) {
     console.error("Error al conectar a la base de datos:", error);
-    process.exit(1); // Salir de la aplicación en caso de error de conexión
+    process.exit(1);
   }
 };
 
-// Llamada a la función connectDB y luego iniciar la aplicación
 connectDB()
   .then(() => {
     const port = process.env.PORT || 3000;
