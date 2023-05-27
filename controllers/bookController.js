@@ -26,18 +26,15 @@ exports.index = asyncHandler(async (req, res, next) => {
 });
 
 exports.book_list = asyncHandler(async (req, res, next) => {
-  const allBooks = await Book.find()
+  const allBooks = await Book.find({}, "title author")
     .sort({ title: 1 })
     .populate("author")
     .exec();
 
-    console.log(allBooks);
-
-  res.render("book_list"),
-    {
-      title: "Book list",
-      book_list: allBooks,
-    };
+  res.render("book_list", {
+    title: "Book list",
+    book_list: allBooks,
+  });
 });
 
 exports.book_detail = asyncHandler(async (req, res, next) => {
