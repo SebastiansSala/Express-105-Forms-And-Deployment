@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1 #{genre.name} : #{genre.id}
+  
+  if books.length > 0
+    p Gotta remove the books first 
+    each book, i in books 
+        li
+          a(href=book.url) #{book.title}
+          |  (#{book.author.name}) 
+
+  else 
+    p Do you really want to delete this Genre?
+
+    form(method='POST' action='')
+      div.form-group
+        input#genreid.form-control(type='hidden', name='genreid', required='true', value=genre.id )
+
+      button.btn.btn-primary(type='submit') Delete

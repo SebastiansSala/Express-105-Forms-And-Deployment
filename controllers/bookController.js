@@ -131,11 +131,19 @@ exports.book_create_post = [
 ];
 
 exports.book_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Book delete GET");
+  const book = await Book.findById(req.params.id)
+    .populate("author")
+    .populate("genre")
+    .exec();
+  res.render("book_delete", {
+    book: book,
+    title: book.title,
+  });
 });
 
 exports.book_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Book delete POST");
+  await Book.findByIdAndDelete(req.body.bookid);
+  res.redirect("/catalog/books");
 });
 
 exports.book_update_get = asyncHandler(async (req, res, next) => {
